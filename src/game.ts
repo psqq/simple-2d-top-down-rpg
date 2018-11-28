@@ -36,7 +36,9 @@ export default class Game implements Updatable {
             .create()
             .noGravity();
         actionManger.init(this);
-        this.eventManager.init();
+        this.eventManager
+            .init()
+            .noContextMenu();
         this.player
             .init();
         this.gameCamera

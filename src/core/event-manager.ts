@@ -16,11 +16,23 @@ export default class EventManager {
             if (action != null)
                 action.finish();
         });
+        return this;
+    }
+    noContextMenu() {
+        window.addEventListener('contextmenu', function (ev) {
+            ev.preventDefault();
+        });
+        return this;
     }
     onKeyDwon(key: string, action: Action) {
         this.onKeyDownActions[key] = action;
     }
     onOnlyKeyDwon(key: string, action: FinisingAction) {
         this.onOnlyKeyDownActions[key] = action;
+    }
+    onMouseDown(callback) {
+        window.addEventListener('mousedown', (ev) => {
+            ev.preventDefault();
+        });
     }
 }
