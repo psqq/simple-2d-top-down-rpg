@@ -19,8 +19,6 @@ export default class AnimationDefenition {
         var size = Victor.fromArray(tilesizeArr);
         for (var i = 0; i < tilesArr.length; i += 2) {
             var sPos = new Victor(tilesArr[i], tilesArr[i + 1]);
-            sPos.x *= size.x;
-            sPos.y *= size.y;
             tiles.push(new Tile(gameImage, size, sPos));
         }
         return new AnimationDefenition(

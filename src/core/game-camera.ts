@@ -20,10 +20,17 @@ export default class GameCamera {
         this.canvas.on('resize', onCanvasResize);
         return this;
     }
-    changeScale(dScale) {
+    changeScale(dScale: number) {
         this.scale.x += dScale;
         this.scale.y += dScale;
         this.updateSize();
+        return this;
+    }
+    setScale(newScale: Victor) {
+        this.scale.x = newScale.x;
+        this.scale.y = newScale.y;
+        this.updateSize();
+        return this;
     }
     updateSize() {
         this.size.x = this.canvas.canvasEl.width / this.scale.x;

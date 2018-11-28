@@ -1,8 +1,9 @@
 import AnimationDefenition from "./animation-defenition";
 import { Mainloop } from "./mainloop";
 import Tile from "./tile";
+import { EventEmitter } from './libs';
 
-export class GameAnimation {
+export class GameAnimation extends EventEmitter {
     private animationDef: AnimationDefenition;
     private duration: number = 1000;
     private mainloop: Mainloop;
@@ -12,6 +13,7 @@ export class GameAnimation {
     private frameRate: number = 0;
     private _loop: boolean = true;
     constructor(animationDef: AnimationDefenition, mainloop: Mainloop) {
+        super();
         this.animationDef = animationDef;
         this.mainloop = mainloop;
         this.frameRate = this.duration / this.animationDef.tiles.length;
@@ -23,6 +25,11 @@ export class GameAnimation {
     }
     getCurrentTile(): Tile {
         return this.animationDef.tiles[this.frame];
+    }
+    playFromBeginning() {
+        this.frame = 0;
+        this.done = false;
+        return this;
     }
     update() {
         if (this.done)
@@ -36,6 +43,7 @@ export class GameAnimation {
                 this.frame = 0;
                 if (!this._loop) {
                     this.done = true;
+                    this.emit('done');
                 }
             }
         }

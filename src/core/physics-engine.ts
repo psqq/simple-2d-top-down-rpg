@@ -18,6 +18,7 @@ export default class PhysicsEngine {
     create() {
         this.engine = Matter.Engine.create();
         this.world = this.engine.world;
+        return this;
     }
     noGravity() {
         this.world.gravity.y = 0;
