@@ -5,7 +5,7 @@ import Game from "../game";
 import { Victor } from "../core/libs";
 import { directionVectorToDirection } from "../core/utils";
 import Direction from "../core/direction";
-import { HERO_IDLE_DOWN } from "../image-manager";
+import { HERO_IDLE_DOWN, HERO_IDLE_LEFT, HERO_IDLE_UP, HERO_IDLE_RIGHT } from "../image-manager";
 import Sprite from "../core/sprite";
 
 export default class HeroEnity extends Entity {
@@ -27,6 +27,7 @@ export default class HeroEnity extends Entity {
         super();
         this.game = game;
         this.sprite = new Sprite(this.game.canvas);
+        this.sprite.setTile(HERO_IDLE_DOWN);
     }
     init() {
         this.walkUp = HERO_WALK_UP.getAnimation(this.game.mainloop);
@@ -59,6 +60,15 @@ export default class HeroEnity extends Entity {
                 break;
             case Direction.NONE:
                 this.isAnimation = false;
+                if (this.currentAnimation === this.walkLeft) {
+                    this.sprite.setTile(HERO_IDLE_LEFT);
+                } else if (this.currentAnimation === this.walkUp) {
+                    this.sprite.setTile(HERO_IDLE_UP);
+                } else if (this.currentAnimation === this.walkDown) {
+                    this.sprite.setTile(HERO_IDLE_DOWN);
+                } else if (this.currentAnimation === this.walkRight) {
+                    this.sprite.setTile(HERO_IDLE_RIGHT);
+                }
                 return;
         }
         this.isAnimation = true;
@@ -97,8 +107,6 @@ export default class HeroEnity extends Entity {
         if (this.isAnimation) {
             this.currentAnimation.update();
             this.sprite.setTile(this.currentAnimation.getCurrentTile());
-        } else {
-            this.sprite.setTile(HERO_IDLE_DOWN);
         }
     }
     draw() {
