@@ -21,7 +21,7 @@ export default class HeroEnity extends Entity {
     game: Game;
     isAnimation: boolean = false;
     isPunch: boolean = false;
-    speed: number = 1;
+    speed: number = 0.1;
     sprite: Sprite;
     constructor(game: Game) {
         super();
@@ -107,10 +107,24 @@ export default class HeroEnity extends Entity {
         if (this.isAnimation) {
             this.currentAnimation.update();
             this.sprite.setTile(this.currentAnimation.getCurrentTile());
+            if (this.currentAnimation == this.walkDown) {
+                this.positionOfCenterInWorld.y += this.game.mainloop.dt * this.speed;
+            }
+            if (this.currentAnimation == this.walkUp) {
+                this.positionOfCenterInWorld.y -= this.game.mainloop.dt * this.speed;
+            }
+            if (this.currentAnimation == this.walkRight) {
+                this.positionOfCenterInWorld.x += this.game.mainloop.dt * this.speed;
+            }
+            if (this.currentAnimation == this.walkLeft) {
+                this.positionOfCenterInWorld.x -= this.game.mainloop.dt * this.speed;
+            }
         }
     }
     draw() {
-        this.sprite.positioner.center(this.positionOfCenterInWorld);
+        this.sprite.positioner
+            .center(this.positionOfCenterInWorld)
+            .setLeftTopPosition();
         this.sprite.draw();
     }
 }

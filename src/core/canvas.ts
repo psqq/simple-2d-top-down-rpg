@@ -5,8 +5,12 @@ import Tile from './tile';
 export default class Canvas extends EventEmitter {
     canvasEl: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
-    create() {
+    create(size?: Victor) {
         this.canvasEl = document.createElement('canvas');
+        if (size != null) {
+            this.canvasEl.width = size.x;
+            this.canvasEl.height = size.y;
+        }
         this.context = this.canvasEl.getContext('2d');
         return this;
     }

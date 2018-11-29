@@ -12,6 +12,10 @@ export function loadImage(filename: string): Promise<HTMLImageElement> {
     });
 }
 
+export function loadJsonFile(filename: string): Promise<Object> {
+    return fetch(filename).then(res => res.json());
+}
+
 export function directionVectorToDirection(v: Victor): Direction {
     if (v.length() === 0)
         return Direction.NONE;

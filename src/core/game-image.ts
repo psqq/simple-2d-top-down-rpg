@@ -25,4 +25,11 @@ export class GameImage {
     toTile() {
         return this.tile;
     }
+    static fromImage(img: HTMLImageElement): GameImage {
+        var gameImage = new GameImage(img.src);
+        gameImage.size.x = img.width;
+        gameImage.size.y = img.height;
+        gameImage.img = img;
+        return gameImage;
+    }
 }
