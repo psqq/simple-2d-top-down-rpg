@@ -1,14 +1,14 @@
-import Entity from "../core/entity";
 import { GameAnimation } from "../core/game-animation";
 import { HERO_WALK_UP, HERO_WALK_DOWN, HERO_WALK_LEFT, HERO_WALK_RIGHT, HERO_PUNCH_UP, HERO_PUNCH_DOWN, HERO_PUNCH_LEFT, HERO_PUNCH_RIGHT } from "../animation-manager";
 import Game from "../game";
-import { Victor } from "../core/libs";
+import { Victor, Matter } from "../core/libs";
 import { directionVectorToDirection } from "../core/utils";
 import Direction from "../core/direction";
 import { HERO_IDLE_DOWN, HERO_IDLE_LEFT, HERO_IDLE_UP, HERO_IDLE_RIGHT } from "../image-manager";
 import Sprite from "../core/sprite";
+import PhysicalEntity from "../core/physical-entity";
 
-export default class HeroEnity extends Entity {
+export default class HeroEnity extends PhysicalEntity {
     walkUp: GameAnimation;
     walkDown: GameAnimation;
     walkLeft: GameAnimation;
@@ -21,8 +21,12 @@ export default class HeroEnity extends Entity {
     game: Game;
     isAnimation: boolean = false;
     isPunch: boolean = false;
-    speed: number = 0.1;
+    speed: number = 2;
     sprite: Sprite;
+    bodyRadius: number = 4;
+    dirVector: Victor = new Victor(0, 0);
+    velocity: Victor = new Victor(0, 0);
+    bodyVelocity: Matter.Vector = Matter.Vector.create(0, 0);
     constructor(game: Game) {
         super();
         this.game = game;
@@ -39,12 +43,14 @@ export default class HeroEnity extends Entity {
         this.punchLeft = HERO_PUNCH_LEFT.getAnimation(this.game.mainloop);
         this.punchRight = HERO_PUNCH_RIGHT.getAnimation(this.game.mainloop);
         this.currentAnimation = this.walkUp;
+        super.init(this.game.physicsEngine.world);
+        this.createCircleBody(this.bodyRadius);
     }
-    move(dirVector: Victor) {
+    move() {
         if (this.isPunch) {
             return;
         }
-        var dir = directionVectorToDirection(dirVector);
+        var dir = directionVectorToDirection(this.dirVector);
         switch (dir) {
             case Direction.LEFT:
                 this.currentAnimation = this.walkLeft;
@@ -60,15 +66,6 @@ export default class HeroEnity extends Entity {
                 break;
             case Direction.NONE:
                 this.isAnimation = false;
-                if (this.currentAnimation === this.walkLeft) {
-                    this.sprite.setTile(HERO_IDLE_LEFT);
-                } else if (this.currentAnimation === this.walkUp) {
-                    this.sprite.setTile(HERO_IDLE_UP);
-                } else if (this.currentAnimation === this.walkDown) {
-                    this.sprite.setTile(HERO_IDLE_DOWN);
-                } else if (this.currentAnimation === this.walkRight) {
-                    this.sprite.setTile(HERO_IDLE_RIGHT);
-                }
                 return;
         }
         this.isAnimation = true;
@@ -104,26 +101,27 @@ export default class HeroEnity extends Entity {
             });
     }
     update() {
+        super.update();
+        if (this.dirVector.isZero()) {
+            this.bodyVelocity.x = this.bodyVelocity.y = 0;
+        } else {
+            this.velocity.x = this.dirVector.x;
+            this.velocity.y = this.dirVector.y;
+            this.velocity.norm().multiplyScalar(this.speed);
+            this.bodyVelocity.x = this.velocity.x;
+            this.bodyVelocity.y = this.velocity.y;
+        }
+        Matter.Body.setVelocity(this.body, this.bodyVelocity);
+        this.move();
         if (this.isAnimation) {
             this.currentAnimation.update();
             this.sprite.setTile(this.currentAnimation.getCurrentTile());
-            if (this.currentAnimation == this.walkDown) {
-                this.positionOfCenterInWorld.y += this.game.mainloop.dt * this.speed;
-            }
-            if (this.currentAnimation == this.walkUp) {
-                this.positionOfCenterInWorld.y -= this.game.mainloop.dt * this.speed;
-            }
-            if (this.currentAnimation == this.walkRight) {
-                this.positionOfCenterInWorld.x += this.game.mainloop.dt * this.speed;
-            }
-            if (this.currentAnimation == this.walkLeft) {
-                this.positionOfCenterInWorld.x -= this.game.mainloop.dt * this.speed;
-            }
         }
     }
     draw() {
         this.sprite.positioner
-            .center(this.positionOfCenterInWorld)
+            .bottom(this.positionOfCenterInWorld.y + this.bodyRadius)
+            .centerX(this.positionOfCenterInWorld.x)
             .setLeftTopPosition();
         this.sprite.draw();
     }

@@ -47,18 +47,20 @@ export default class Game implements Updatable {
             .noContextMenu();
         this.player
             .init();
-        this.player.entity.positionOfCenterInWorld.x = 54 * 16 + 8;
-        this.player.entity.positionOfCenterInWorld.y = 50 * 16 - 8;
+        this.player.entity.setPosition(new Victor(54 * 16 + 8, 50 * 16 - 8));
         this.gameCamera
             .init()
             .setScale(new Victor(2, 2))
-            .follow(this.player.entity.positionOfCenterInWorld);
+            .follow(this.player.entity.getPosition());
         this.map1.makeCacheFromAllLayers();
+        this.map1.init(this.physicsEngine.world);
+        this.map1.addStaticObjectsFromObjectLayer('collision');
         return this;
     }
     update() {
-        this.gameCamera.update();
         this.player.update();
+        this.gameCamera.update();
+        this.physicsEngine.update();
         this.draw();
         return this;
     }

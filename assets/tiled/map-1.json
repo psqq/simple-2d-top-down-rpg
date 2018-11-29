@@ -36,9 +36,76 @@
          "width":100,
          "x":0,
          "y":0
+        }, 
+        {
+         "color":"#00ff00",
+         "draworder":"topdown",
+         "id":5,
+         "name":"collision",
+         "objects":[
+                {
+                 "height":79.25,
+                 "id":2,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":14.25,
+                 "x":832.5,
+                 "y":752
+                }, 
+                {
+                 "height":14,
+                 "id":3,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":83.75,
+                 "x":843.5,
+                 "y":752.25
+                }, 
+                {
+                 "height":70.25,
+                 "id":4,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":14.25,
+                 "x":912.75,
+                 "y":761
+                }, 
+                {
+                 "height":14.25,
+                 "id":6,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34.75,
+                 "x":844.25,
+                 "y":816.75
+                }, 
+                {
+                 "height":14.75,
+                 "id":7,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":29.75,
+                 "x":897,
+                 "y":816.25
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":2,
+ "nextlayerid":6,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.2.1",

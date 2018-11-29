@@ -1,11 +1,14 @@
 import TiledMap, { ITilelayer } from "./tiled/tiled-map";
 import Canvas from "./canvas";
-import { Victor } from "./libs";
+import { Victor, Matter } from "./libs";
+import PhysicalEntity from "./physical-entity";
+import PhysicsEngine from "./physics-engine";
 
 export default class GameMap extends TiledMap {
     cachedCanvas: Canvas;
     canvas: Canvas;
     ctx: CanvasRenderingContext2D;
+    bodiesContainer: Matter.Composite;
     constructor(filename: string, canvas: Canvas) {
         super(filename);
         this.canvas = canvas;
@@ -13,6 +16,26 @@ export default class GameMap extends TiledMap {
     }
     async load() {
         await this.loadAndParse();
+    }
+    init(bodiesContainer: Matter.Composite) {
+        this.bodiesContainer = bodiesContainer;
+    }
+    addStaticObjectsFromObjectLayer(layerName: string) {
+        var layer = this.getObjectLayer(layerName);
+        for (var obj of layer.objects) {
+            var cx = obj.x - obj.width / 2;
+            var cy = obj.y - obj.height / 2;
+            var settings = PhysicsEngine.getArcadeBodySettings();
+            settings.isStatic = true;
+            Matter.Composite.add(
+                this.bodiesContainer,
+                Matter.Bodies.rectangle(
+                    cx, cy,
+                    obj.width, obj.height,
+                    settings
+                )
+            );
+        }
     }
     drawTilelayer(layer: ITilelayer) {
         let pos = new Victor(0, 0);

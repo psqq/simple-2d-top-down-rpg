@@ -105,6 +105,13 @@ export default class TiledMap {
     isObjectlayer(layer: ITilelayer | IObjectLayer): layer is IObjectLayer {
         return layer.type == "objectgroup";
     }
+    getObjectLayer(name: string) {
+        for (var layer of this.map.layers) {
+            if (this.isObjectlayer(layer) && layer.name === name) {
+                return layer;
+            }
+        }
+    }
     async loadAndParseTileset(t: ITileset) {
         t.image = path.join(this.dirname, t.image);
         t.img = await loadImage(t.image);
