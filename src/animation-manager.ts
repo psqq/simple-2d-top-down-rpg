@@ -1,5 +1,16 @@
-import { HERO } from './image-manager';
+import { HERO, TINY_BASIC_THINGS } from './image-manager';
 import AnimationDefenition from './core/animation-defenition';
+
+export const OPEN_DOOR = AnimationDefenition.fromArrays(
+    TINY_BASIC_THINGS,
+    [16, 16],
+    [
+        0, 0,
+        0, 1,
+        0, 2,
+        0, 3,
+    ]
+);
 
 export const HERO_WALK_UP = AnimationDefenition.fromArrays(
     HERO,

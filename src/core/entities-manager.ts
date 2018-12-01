@@ -1,5 +1,6 @@
 import Entity from './entity';
 import GameCamera from './game-camera';
+import { Victor } from './libs';
 
 export default class EntitiesManager {
     gameCamera: GameCamera;
@@ -10,6 +11,19 @@ export default class EntitiesManager {
     addEntity(e: Entity) {
         this.entities.push(e);
         return this;
+    }
+    findAll(where: Victor): Entity[] {
+        var res: Entity[] = [];
+        for (var e of this.entities) {
+            var ePos = e.getLeftTopPosition();
+            if (
+                ePos.x < where.x && where.x <= ePos.x + e.size.x
+                && ePos.y < where.y && where.y <= ePos.y + e.size.y
+            ) {
+                res.push(e);
+            }
+        }
+        return res;
     }
     update() {
         var deferredKill = [];

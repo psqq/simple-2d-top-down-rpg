@@ -20,8 +20,11 @@ export class GameAnimation extends EventEmitter {
         this.done = false;
     }
     loop(value: boolean = true) {
-        this._loop = true;
+        this._loop = value;
         return this;
+    }
+    getTile(index: number) {
+        return this.animationDef.tiles[index];
     }
     getCurrentTile(): Tile {
         return this.animationDef.tiles[this.frame];

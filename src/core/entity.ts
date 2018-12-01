@@ -15,6 +15,12 @@ export default class Entity {
     getPosition() {
         return this.positionOfCenterInWorld;
     }
-    update() {}
-    draw() {}
+    getLeftTopPosition() {
+        var v = new Victor(0, 0);
+        v.x = this.positionOfCenterInWorld.x - this.size.x / 2;
+        v.y = this.positionOfCenterInWorld.y - this.size.y / 2;
+        return v;
+    }
+    update() { }
+    draw() { }
 }

@@ -1,6 +1,9 @@
 import HeroEnity from "./entities/hero-entity";
 import Game from "./game";
-import { moveLeftAction, moveRightAction, moveUpAction, moveDownAction, cameraZoomOutAction, cameraZoomInAction, moveToTargetAction } from "./action-manager";
+import {
+    moveLeftAction, moveRightAction, moveUpAction, moveDownAction,
+    cameraZoomOutAction, cameraZoomInAction, moveToTargetAction, clickAction
+} from "./action-manager";
 import { Victor } from "./core/libs";
 
 export default class Player {
@@ -21,5 +24,6 @@ export default class Player {
         this.game.eventManager.onScrollDown(cameraZoomOutAction);
         this.game.eventManager.onScrollUp(cameraZoomInAction);
         this.game.eventManager.onRightClick(moveToTargetAction);
+        this.game.eventManager.onLeftClick(clickAction);
     }
 }

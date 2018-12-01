@@ -9,6 +9,7 @@ import Player from './player';
 import EventManager from './core/event-manager';
 import GameMap from './core/game-map';
 import EntitiesManager from './core/entities-manager';
+import DoorEnity from './entities/door-entity';
 
 export default class Game implements Updatable {
     mainloop: Mainloop;
@@ -56,6 +57,18 @@ export default class Game implements Updatable {
             .setGameCamera(this.gameCamera);
         this.map1.makeCacheFromVisibleLayers();
         this.map1.addStaticObjectsFromObjectLayer('collision');
+        var entitiesLayer = this.map1.getObjectLayer('entities');
+        var pos = new Victor(0, 0);
+        for (var obj of entitiesLayer.objects) {
+            pos.x = obj.x + obj.width / 2;
+            pos.y = obj.y + obj.height / 2;
+            if (obj.name === 'door') {
+                var door = new DoorEnity(this);
+                door.init();
+                door.setPosition(pos);
+                this.entitiesManager.addEntity(door);
+            }
+        }
         this.player.init();
         this.gameCamera.follow(this.player.entity.getPosition());
         return this;

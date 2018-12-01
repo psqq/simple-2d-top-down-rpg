@@ -1,6 +1,4 @@
 import Game from "../game";
-import FinisingAction from "../core/finishing-action";
-import Direction from "../core/direction";
 import DataAction from "../core/data-action";
 
 export default class MoveToTargeAction implements DataAction<MouseEvent> {

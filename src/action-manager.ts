@@ -4,15 +4,17 @@ import { Victor } from "./core/libs";
 import Direction from "./core/direction";
 import CameraZoomAction from "./actions/camera-zoom-action";
 import MoveToTargetAction from "./actions/move-to-target-action";
+import ClickAction from "./actions/click-action";
 
 export var
     moveLeftAction: MoveAction,
     moveRightAction: MoveAction,
     moveUpAction: MoveAction,
     moveDownAction: MoveAction,
-    moveToTargetAction: MoveToTargetAction,
     cameraZoomOutAction: CameraZoomAction,
-    cameraZoomInAction: CameraZoomAction;
+    cameraZoomInAction: CameraZoomAction,
+    moveToTargetAction: MoveToTargetAction,
+    clickAction: ClickAction;
 
 export function init(game: Game) {
     moveLeftAction = new MoveAction(game, Direction.LEFT);
@@ -22,4 +24,5 @@ export function init(game: Game) {
     cameraZoomOutAction = new CameraZoomAction(game, -0.1);
     cameraZoomInAction = new CameraZoomAction(game, 0.1);
     moveToTargetAction = new MoveToTargetAction(game);
+    clickAction = new ClickAction(game);
 }

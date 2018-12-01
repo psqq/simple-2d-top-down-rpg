@@ -17,11 +17,24 @@ export default class PhysicalEntity extends Entity {
             Matter.Vector.create(pos.x, pos.y)
         );
     }
-    createCircleBody(r: number) {
+    createCircleBody(r: number, settings: Matter.IBodyDefinition = {}) {
+        this.size.x = r + r;
+        this.size.y = r + r;
         this.body = Matter.Bodies.circle(
             this.positionOfCenterInWorld.x,
             this.positionOfCenterInWorld.y,
-            r
+            r,
+            settings
+        );
+        Matter.Composite.add(this.bodyContainer, this.body);
+    }
+    createRectangleBody(size: Victor, settings: Matter.IBodyDefinition = {}) {
+        this.size = size;
+        this.body = Matter.Bodies.rectangle(
+            this.positionOfCenterInWorld.x,
+            this.positionOfCenterInWorld.y,
+            size.x, size.y,
+            settings
         );
         Matter.Composite.add(this.bodyContainer, this.body);
     }

@@ -1,7 +1,7 @@
 import { Mainloop } from "./mainloop";
 import { Matter } from './libs';
 
-const ARCADE_BODY_SETTINGS = {
+const ARCADE_BODY_SETTINGS: Matter.IBodyDefinition = {
     density: 1,
     friction: 0,
     restitution: 1,
@@ -25,10 +25,10 @@ export default class PhysicsEngine {
         this.world.gravity.y = 0;
         this.world.gravity.x = 0;
     }
-    static getArcadeBodySettings() {
-        return Object.assign({}, ARCADE_BODY_SETTINGS);
-    }
     update() {
         Matter.Engine.update(this.engine, this.mainloop.dt);
+    }
+    static getArcadeBodySettings(): Matter.IBodyDefinition {
+        return Object.assign({}, ARCADE_BODY_SETTINGS);
     }
 }
