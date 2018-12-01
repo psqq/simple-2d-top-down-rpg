@@ -43,6 +43,12 @@ export default class Canvas extends EventEmitter {
         this.context.clearRect(0, 0, w, h);
         return this;
     }
+    drawRect(pos: Victor, size: Victor, color='black') {
+        this.context.save();
+        this.context.fillStyle = color;
+        this.context.fillRect(pos.x, pos.y, size.x, size.y);
+        this.context.restore();
+    }
     drawGameImage(gameImage: GameImage, leftTopPos: Victor) {
         var dx = leftTopPos.x;
         var dy = leftTopPos.y;

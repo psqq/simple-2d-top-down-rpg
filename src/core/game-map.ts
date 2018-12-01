@@ -23,8 +23,8 @@ export default class GameMap extends TiledMap {
     addStaticObjectsFromObjectLayer(layerName: string) {
         var layer = this.getObjectLayer(layerName);
         for (var obj of layer.objects) {
-            var cx = obj.x - obj.width / 2;
-            var cy = obj.y - obj.height / 2;
+            var cx = obj.x + obj.width / 2;
+            var cy = obj.y + obj.height / 2;
             var settings = PhysicsEngine.getArcadeBodySettings();
             settings.isStatic = true;
             Matter.Composite.add(

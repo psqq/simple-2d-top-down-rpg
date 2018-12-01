@@ -7,6 +7,7 @@ import Direction from "../core/direction";
 import { HERO_IDLE_DOWN, HERO_IDLE_LEFT, HERO_IDLE_UP, HERO_IDLE_RIGHT } from "../image-manager";
 import Sprite from "../core/sprite";
 import PhysicalEntity from "../core/physical-entity";
+import DirectionalMovement from "../core/directional-movement";
 
 export default class HeroEnity extends PhysicalEntity {
     walkUp: GameAnimation;
@@ -23,9 +24,8 @@ export default class HeroEnity extends PhysicalEntity {
     isPunch: boolean = false;
     speed: number = 2;
     sprite: Sprite;
+    dirMovement: DirectionalMovement = new DirectionalMovement();
     bodyRadius: number = 4;
-    dirVector: Victor = new Victor(0, 0);
-    velocity: Victor = new Victor(0, 0);
     bodyVelocity: Matter.Vector = Matter.Vector.create(0, 0);
     constructor(game: Game) {
         super();
@@ -50,7 +50,8 @@ export default class HeroEnity extends PhysicalEntity {
         if (this.isPunch) {
             return;
         }
-        var dir = directionVectorToDirection(this.dirVector);
+        var dir = directionVectorToDirection(this.dirMovement.getNormDirectionVector());
+        this.isAnimation = true;
         switch (dir) {
             case Direction.LEFT:
                 this.currentAnimation = this.walkLeft;
@@ -68,7 +69,6 @@ export default class HeroEnity extends PhysicalEntity {
                 this.isAnimation = false;
                 return;
         }
-        this.isAnimation = true;
     }
     punch(dirVector: Victor) {
         var dir = directionVectorToDirection(dirVector);
@@ -102,14 +102,12 @@ export default class HeroEnity extends PhysicalEntity {
     }
     update() {
         super.update();
-        if (this.dirVector.isZero()) {
-            this.bodyVelocity.x = this.bodyVelocity.y = 0;
+        if (this.dirMovement.isMoving()) {
+            var dir = this.dirMovement.getNormDirectionVector();
+            this.bodyVelocity.x = dir.x * this.speed;
+            this.bodyVelocity.y = dir.y * this.speed;
         } else {
-            this.velocity.x = this.dirVector.x;
-            this.velocity.y = this.dirVector.y;
-            this.velocity.norm().multiplyScalar(this.speed);
-            this.bodyVelocity.x = this.velocity.x;
-            this.bodyVelocity.y = this.velocity.y;
+            this.bodyVelocity.x = this.bodyVelocity.y = 0;
         }
         Matter.Body.setVelocity(this.body, this.bodyVelocity);
         this.move();

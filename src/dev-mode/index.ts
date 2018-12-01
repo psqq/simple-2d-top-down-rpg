@@ -33,13 +33,19 @@ function afterDraw() {
 function draw(): Game {
     beforDraw();
     gameDraw.apply(game);
+    game.gameCamera.begin();
     afterDraw();
+    game.gameCamera.end();
     return game;
+}
+
+function replaceGameDraw() {
+    gameDraw = game.draw;
+    game.draw = draw;
 }
 
 export function init(aGame: Game) {
     console.log('Debug mode inited');
     game = aGame;
-    gameDraw = game.draw;
-    game.draw = draw;
+    // replaceGameDraw();
 }

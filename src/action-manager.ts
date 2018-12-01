@@ -1,6 +1,7 @@
 import MoveAction from "./actions/move-action";
 import Game from "./game";
 import { Victor } from "./core/libs";
+import Direction from "./core/direction";
 
 export var
     moveLeftAction,
@@ -9,8 +10,8 @@ export var
     moveDownAction;
 
 export function init(game: Game) {
-    moveLeftAction = new MoveAction(game, new Victor(-1, 0));
-    moveRightAction = new MoveAction(game, new Victor(1, 0));
-    moveUpAction = new MoveAction(game, new Victor(0, -1));
-    moveDownAction = new MoveAction(game, new Victor(0, 1));
+    moveLeftAction = new MoveAction(game, Direction.LEFT);
+    moveRightAction = new MoveAction(game, Direction.RIGHT);
+    moveUpAction = new MoveAction(game, Direction.UP);
+    moveDownAction = new MoveAction(game, Direction.DOWN);
 }
