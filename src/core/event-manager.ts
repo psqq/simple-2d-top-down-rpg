@@ -7,7 +7,10 @@ export default class EventManager {
     private onScrollUpActions: Action[] = [];
     private onScrollDownActions: Action[] = [];
     private onMouseDownActions: DataAction<MouseEvent>[] = [];
+    private onRightClickActions: DataAction<MouseEvent>[] = [];
+    private onLeftClickActions: DataAction<MouseEvent>[] = [];
     private onOnlyKeyDownActions: { [s: string]: FinisingAction; } = {};
+    private _noContextMenu: boolean = false;
     init() {
         let self = this;
         window.addEventListener('keydown', (ev) => {
@@ -22,19 +25,35 @@ export default class EventManager {
         });
         window.addEventListener('mousedown', (ev) => {
             ev.preventDefault();
-            for(var action of this.onMouseDownActions) {
+            for(var action of self.onMouseDownActions) {
+                action.execute(ev);
+            }
+        });
+        window.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            if (ev.button === 0) {
+                for(var action of self.onLeftClickActions) {
+                    action.execute(ev);
+                }
+            }
+        });
+        window.addEventListener('contextmenu', (ev) => {
+            if (self._noContextMenu) {
+                ev.preventDefault();
+            }
+            for(var action of self.onRightClickActions) {
                 action.execute(ev);
             }
         });
         window.addEventListener('wheel', (ev) => {
             var delta = ev.deltaY || ev.detail || ev.wheelDelta;
             if (delta < 0) {
-                for(var action of this.onScrollUpActions) {
+                for(var action of self.onScrollUpActions) {
                     action.execute();
                 }
             }
             if (delta > 0) {
-                for(var action of this.onScrollDownActions) {
+                for(var action of self.onScrollDownActions) {
                     action.execute();
                 }
             }
@@ -42,9 +61,7 @@ export default class EventManager {
         return this;
     }
     noContextMenu() {
-        window.addEventListener('contextmenu', function (ev) {
-            ev.preventDefault();
-        });
+        this._noContextMenu = true;
         return this;
     }
     onKeyDwon(key: string, action: Action) {
@@ -55,6 +72,12 @@ export default class EventManager {
     }
     onMouseDown(action: DataAction<MouseEvent>) {
         this.onMouseDownActions.push(action);
+    }
+    onRightClick(action: DataAction<MouseEvent>) {
+        this.onRightClickActions.push(action);
+    }
+    onLeftClick(action: DataAction<MouseEvent>) {
+        this.onLeftClickActions.push(action);
     }
     onScrollUp(action: Action) {
         this.onScrollUpActions.push(action);
