@@ -65,6 +65,19 @@ export default class GameMap extends TiledMap {
         this.draw();
         this.canvas = oldCanvas;
     }
+    makeCacheFromVisibleLayers() {
+        var oldCanvas = this.canvas;
+        this.cachedCanvas = new Canvas().create(this.size);
+        this.canvas = this.cachedCanvas;
+        for (var layer of this.map.layers) {
+            if (this.isTilelayer(layer)) {
+                if (layer.visible) {
+                    this.drawTilelayer(layer);
+                }
+            }
+        }
+        this.canvas = oldCanvas;
+    }
     drawFromCache() {
         this.canvas.context.drawImage(
             this.cachedCanvas.canvasEl,

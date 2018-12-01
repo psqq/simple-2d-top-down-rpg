@@ -52,7 +52,7 @@ export default class Game implements Updatable {
             .init()
             .setScale(new Victor(2, 2))
             .follow(this.player.entity.getPosition());
-        this.map1.makeCacheFromAllLayers();
+        this.map1.makeCacheFromVisibleLayers();
         this.map1.init(this.physicsEngine.world);
         this.map1.addStaticObjectsFromObjectLayer('collision');
         return this;
