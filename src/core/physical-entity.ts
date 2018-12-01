@@ -44,6 +44,10 @@ export default class PhysicalEntity extends Entity {
             Matter.World.remove(this.bodyContainer, this.body);
         }
     }
+    removeBody() {
+        Matter.Composite.remove(this.bodyContainer, this.body);
+        this.body = null;
+    }
     syncWithBodyPosition() {
         this.positionOfCenterInWorld.x = this.body.position.x;
         this.positionOfCenterInWorld.y = this.body.position.y;

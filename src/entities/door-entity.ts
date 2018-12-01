@@ -17,26 +17,49 @@ export default class DoorEnity extends PhysicalEntity {
     currentTile: Tile;
     sprite: Sprite;
     bodySize: Victor = new Victor(16, 16);
+    opened: boolean = false;
     constructor(game: Game) {
         super();
         this.game = game;
         this.sprite = new Sprite(this.game.canvas);
     }
-    init() {
-        this.openDoorAnimation = OPEN_DOOR.getAnimation(this.game.mainloop);
-        this.sprite.setTile(this.openDoorAnimation.getTile(0));
-        super.init(this.game.physicsEngine.world);
+    createDoorBody() {
         var settings = PhysicsEngine.getArcadeBodySettings();
         settings.isStatic = true;
         this.createRectangleBody(this.bodySize, settings);
     }
-    open() {
+    init() {
+        this.openDoorAnimation =
+            OPEN_DOOR.getAnimation(this.game.mainloop)
+                .setDuration(300);
+        this.sprite.setTile(this.openDoorAnimation.getTile(0));
+        super.init(this.game.physicsEngine.world);
+        this.createDoorBody();
+    }
+    openDoor() {
+        if (this.isAnimation)
+            return;
         this.isAnimation = true;
         this.openDoorAnimation
             .playFromBeginning()
             .loop(false)
             .once('done', () => {
-                Matter.Composite.remove(this.bodyContainer, this.body);
+                this.removeBody();
+                this.opened = true;
+                this.isAnimation = false;
+            });
+    }
+    closeDoor() {
+        if (this.isAnimation)
+            return;
+        this.isAnimation = true;
+        this.openDoorAnimation
+            .playFromEnding()
+            .loop(false)
+            .once('done', () => {
+                if (this.body) this.removeBody();
+                this.createDoorBody();
+                this.opened = false;
                 this.isAnimation = false;
             });
     }
@@ -45,7 +68,11 @@ export default class DoorEnity extends PhysicalEntity {
         if (this.isAnimation) {
             this.openDoorAnimation.update();
             if (!this.isAnimation) {
-                this.sprite.setTile(this.openDoorAnimation.getTile(3));
+                if (this.opened) {
+                    this.sprite.setTile(this.openDoorAnimation.getTile(3));
+                } else {
+                    this.sprite.setTile(this.openDoorAnimation.getTile(0));
+                }
             } else {
                 this.sprite.setTile(this.openDoorAnimation.getCurrentTile());
             }
