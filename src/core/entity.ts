@@ -4,6 +4,7 @@ export default class Entity {
     protected positionOfCenterInWorld: Victor = new Victor(0, 0);
     size: Victor = new Victor(0, 0);
     killed: boolean = false;
+    zindex: number = 0;
     kill() {
         this.killed = true;
     }

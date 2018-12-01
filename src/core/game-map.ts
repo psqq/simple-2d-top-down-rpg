@@ -3,12 +3,14 @@ import Canvas from "./canvas";
 import { Victor, Matter } from "./libs";
 import PhysicalEntity from "./physical-entity";
 import PhysicsEngine from "./physics-engine";
+import GameCamera from "./game-camera";
 
 export default class GameMap extends TiledMap {
     cachedCanvas: Canvas;
     canvas: Canvas;
     ctx: CanvasRenderingContext2D;
     bodiesContainer: Matter.Composite;
+    gameCamera: GameCamera;
     constructor(filename: string, canvas: Canvas) {
         super(filename);
         this.canvas = canvas;
@@ -17,8 +19,13 @@ export default class GameMap extends TiledMap {
     async load() {
         await this.loadAndParse();
     }
-    init(bodiesContainer: Matter.Composite) {
+    setBodiesContainer(bodiesContainer: Matter.Composite) {
         this.bodiesContainer = bodiesContainer;
+        return this;
+    }
+    setGameCamera(gameCamera: GameCamera) {
+        this.gameCamera = gameCamera;
+        return this;
     }
     addStaticObjectsFromObjectLayer(layerName: string) {
         var layer = this.getObjectLayer(layerName);
@@ -79,9 +86,19 @@ export default class GameMap extends TiledMap {
         this.canvas = oldCanvas;
     }
     drawFromCache() {
-        this.canvas.context.drawImage(
-            this.cachedCanvas.canvasEl,
-            0, 0
-        );
+        if (this.gameCamera != null) {
+            var pos = this.gameCamera.positionInWorld;
+            var size = this.gameCamera.size;
+            this.canvas.context.drawImage(
+                this.cachedCanvas.canvasEl,
+                pos.x, pos.y, size.x, size.y,
+                pos.x, pos.y, size.x, size.y,
+            );
+        } else {
+            this.canvas.context.drawImage(
+                this.cachedCanvas.canvasEl,
+                0, 0
+            );
+        }
     }
 }

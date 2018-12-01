@@ -8,6 +8,7 @@ import PhysicsEngine from './core/physics-engine';
 import Player from './player';
 import EventManager from './core/event-manager';
 import GameMap from './core/game-map';
+import EntitiesManager from './core/entities-manager';
 
 export default class Game implements Updatable {
     mainloop: Mainloop;
@@ -16,6 +17,7 @@ export default class Game implements Updatable {
     physicsEngine: PhysicsEngine;
     player: Player;
     eventManager: EventManager;
+    entitiesManager: EntitiesManager;
     map1: GameMap;
     constructor() {
         this.mainloop = new Mainloop(this);
@@ -23,6 +25,7 @@ export default class Game implements Updatable {
         this.gameCamera = new GameCamera(this.canvas);
         this.physicsEngine = new PhysicsEngine(this.mainloop);
         this.eventManager = new EventManager();
+        this.entitiesManager = new EntitiesManager(this.gameCamera);
         this.player = new Player(this);
         this.map1 = new GameMap("/assets/tiled/map-1.json", this.canvas);
     }
@@ -34,6 +37,7 @@ export default class Game implements Updatable {
         return this;
     }
     init() {
+        actionManger.init(this);
         this.canvas
             .create()
             .appendTo('body')
@@ -41,24 +45,23 @@ export default class Game implements Updatable {
         this.physicsEngine
             .create()
             .noGravity();
-        actionManger.init(this);
         this.eventManager
             .init()
             .noContextMenu();
-        this.player
-            .init();
-        this.player.entity.setPosition(new Victor(54 * 16 + 8, 50 * 16 - 8));
         this.gameCamera
             .init()
-            .setScale(new Victor(2, 2))
-            .follow(this.player.entity.getPosition());
+            .setScale(new Victor(2, 2));
+        this.map1
+            .setBodiesContainer(this.physicsEngine.world)
+            .setGameCamera(this.gameCamera);
         this.map1.makeCacheFromVisibleLayers();
-        this.map1.init(this.physicsEngine.world);
         this.map1.addStaticObjectsFromObjectLayer('collision');
+        this.player.init();
+        this.gameCamera.follow(this.player.entity.getPosition());
         return this;
     }
     update() {
-        this.player.update();
+        this.entitiesManager.update();
         this.gameCamera.update();
         this.physicsEngine.update();
         this.draw();
@@ -68,7 +71,7 @@ export default class Game implements Updatable {
         this.canvas.clear();
         this.gameCamera.begin();
         this.map1.drawFromCache();
-        this.player.draw();
+        this.entitiesManager.draw();
         this.gameCamera.end();
         return this;
     }
