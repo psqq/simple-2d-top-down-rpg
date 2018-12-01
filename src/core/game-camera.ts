@@ -23,6 +23,12 @@ export default class GameCamera {
     changeScale(dScale: number) {
         this.scale.x += dScale;
         this.scale.y += dScale;
+        if (this.scale.x < 0.1) {
+            this.scale.x = 0.1;
+        }
+        if (this.scale.y < 0.1) {
+            this.scale.y = 0.1;
+        }
         this.updateSize();
         return this;
     }
