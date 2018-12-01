@@ -20,6 +20,15 @@ export default class GameCamera {
         this.canvas.on('resize', onCanvasResize);
         return this;
     }
+    getPositionByMouseEvent(e: MouseEvent) {
+        var w = this.canvas.canvasEl.width;
+        var h = this.canvas.canvasEl.height;
+        var nw = this.size.x;
+        var nh = this.size.y;
+        var x = nw * (e.clientX / w) + this.positionInWorld.x;
+        var y = nh * (e.clientY / h) + this.positionInWorld.y;
+        return new Victor(x, y);
+    }
     changeScale(dScale: number) {
         this.scale.x += dScale;
         this.scale.y += dScale;

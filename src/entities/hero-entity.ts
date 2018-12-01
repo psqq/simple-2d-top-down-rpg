@@ -8,6 +8,7 @@ import { HERO_IDLE_DOWN, HERO_IDLE_LEFT, HERO_IDLE_UP, HERO_IDLE_RIGHT } from ".
 import Sprite from "../core/sprite";
 import PhysicalEntity from "../core/physical-entity";
 import DirectionalMovement from "../core/directional-movement";
+import TargetMovement from "../core/target-movement";
 
 export default class HeroEnity extends PhysicalEntity {
     walkUp: GameAnimation;
@@ -25,6 +26,7 @@ export default class HeroEnity extends PhysicalEntity {
     speed: number = 2;
     sprite: Sprite;
     dirMovement: DirectionalMovement = new DirectionalMovement();
+    targetMovement: TargetMovement;
     bodyRadius: number = 4;
     bodyVelocity: Matter.Vector = Matter.Vector.create(0, 0);
     constructor(game: Game) {
@@ -32,6 +34,7 @@ export default class HeroEnity extends PhysicalEntity {
         this.game = game;
         this.sprite = new Sprite(this.game.canvas);
         this.sprite.setTile(HERO_IDLE_DOWN);
+        this.targetMovement = new TargetMovement(this);
     }
     init() {
         this.walkUp = HERO_WALK_UP.getAnimation(this.game.mainloop);
@@ -46,11 +49,11 @@ export default class HeroEnity extends PhysicalEntity {
         super.init(this.game.physicsEngine.world);
         this.createCircleBody(this.bodyRadius);
     }
-    move() {
+    move(dirVector: Victor) {
         if (this.isPunch) {
             return;
         }
-        var dir = directionVectorToDirection(this.dirMovement.getNormDirectionVector());
+        var dir = directionVectorToDirection(dirVector);
         this.isAnimation = true;
         switch (dir) {
             case Direction.LEFT:
@@ -102,15 +105,22 @@ export default class HeroEnity extends PhysicalEntity {
     }
     update() {
         super.update();
+        var dir: Victor = new Victor(0, 0);
         if (this.dirMovement.isMoving()) {
-            var dir = this.dirMovement.getNormDirectionVector();
-            this.bodyVelocity.x = dir.x * this.speed;
-            this.bodyVelocity.y = dir.y * this.speed;
-        } else {
-            this.bodyVelocity.x = this.bodyVelocity.y = 0;
+            dir = this.dirMovement.getNormDirectionVector();
+        } else if (this.targetMovement.isMoving()) {
+            var l = this.targetMovement.getDistanceToTarget();
+            if (l < 3) {
+                this.game.player.entity.targetMovement.stopMoving();
+                return;
+            } else {
+                dir = this.targetMovement.getNormDirectionVector();
+            }
         }
+        this.bodyVelocity.x = dir.x * this.speed;
+        this.bodyVelocity.y = dir.y * this.speed;
         Matter.Body.setVelocity(this.body, this.bodyVelocity);
-        this.move();
+        this.move(dir);
         if (this.isAnimation) {
             this.currentAnimation.update();
             this.sprite.setTile(this.currentAnimation.getCurrentTile());

@@ -1,12 +1,12 @@
 import Direction from "./direction";
-import { Victor } from "./libs";
+import { Victor, EventEmitter } from "./libs";
 
 export default class DirectionalMovement {
-    private moveLeft: boolean = false;
-    private moveRight: boolean = false;
-    private moveUp: boolean = false;
-    private moveDown: boolean = false;
-    private dir: Victor = new Victor(0, 0);
+    protected moveLeft: boolean = false;
+    protected moveRight: boolean = false;
+    protected moveUp: boolean = false;
+    protected moveDown: boolean = false;
+    protected dir: Victor = new Victor(0, 0);
     isMoving() {
         return this.moveLeft || this.moveRight || this.moveDown || this.moveUp;
     }
@@ -73,6 +73,12 @@ export default class DirectionalMovement {
         if (d === Direction.UP) {
             this.stopGoUp();
         }
+    }
+    stopMoving() {
+        this.moveLeft = false;
+        this.moveRight = false;
+        this.moveUp = false;
+        this.moveDown = false;
     }
     getNormDirectionVector() {
         this.dir.x = this.dir.y = 0;

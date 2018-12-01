@@ -13,11 +13,13 @@ export default class MoveAction extends FinisingAction {
     execute() {
         super.execute();
         var hero = this.game.player.entity;
+        hero.targetMovement.stopMoving();
         hero.dirMovement.goDirection(this.dir);
     }
     finish() {
         super.finish();
         var hero = this.game.player.entity;
+        hero.targetMovement.stopMoving();
         hero.dirMovement.stopGoDirection(this.dir);
     }
 }

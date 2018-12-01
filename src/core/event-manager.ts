@@ -1,10 +1,12 @@
 import Action from "./action";
 import FinisingAction from "./finishing-action";
+import DataAction from "./data-action";
 
 export default class EventManager {
     private onKeyDownActions: { [s: string]: Action; } = {};
     private onScrollUpActions: Action[] = [];
     private onScrollDownActions: Action[] = [];
+    private onMouseDownActions: DataAction<MouseEvent>[] = [];
     private onOnlyKeyDownActions: { [s: string]: FinisingAction; } = {};
     init() {
         let self = this;
@@ -20,12 +22,14 @@ export default class EventManager {
         });
         window.addEventListener('mousedown', (ev) => {
             ev.preventDefault();
+            for(var action of this.onMouseDownActions) {
+                action.execute(ev);
+            }
         });
         window.addEventListener('wheel', (ev) => {
             var delta = ev.deltaY || ev.detail || ev.wheelDelta;
             if (delta < 0) {
                 for(var action of this.onScrollUpActions) {
-                    console.log(delta);
                     action.execute();
                 }
             }
@@ -49,7 +53,8 @@ export default class EventManager {
     onOnlyKeyDwon(key: string, action: FinisingAction) {
         this.onOnlyKeyDownActions[key] = action;
     }
-    onMouseDown(action: Action) {
+    onMouseDown(action: DataAction<MouseEvent>) {
+        this.onMouseDownActions.push(action);
     }
     onScrollUp(action: Action) {
         this.onScrollUpActions.push(action);
