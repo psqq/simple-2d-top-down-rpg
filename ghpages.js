@@ -7,7 +7,7 @@ var options = {
         'dist/*', 'assets'
     ],
     runBeforeCheckoutOnGhPages: [
-        'yarn run setDebugStatus'
+        // 'yarn run setDebugStatus'
     ],
     onGhPages: {
         removeFiles: true,

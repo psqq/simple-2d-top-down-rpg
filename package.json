@@ -8,7 +8,7 @@
     "setProdactionStatus": "shx echo \"export default false;\" > ./src/dev-status.ts",
     "dev": "yarn run setDebugStatus && webpack-dev-server -d",
     "watch": "yarn run setDebugStatus && webpack -w -d --mode development",
-    "build": "yarn run setProdactionStatus && yarn run clean && webpack -p --mode production",
+    "build": "yarn run setProdactionStatus && yarn run clean && webpack -p --mode production && yarn run setDebugStatus",
     "devbuild": "yarn run setDebugStatus && yarn run clean && webpack -d --mode development",
     "clean": "shx rm -rf dist",
     "ghp": "node ghpages.js"
